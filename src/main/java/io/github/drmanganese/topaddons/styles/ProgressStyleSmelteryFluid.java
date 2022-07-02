@@ -5,7 +5,12 @@ import mcjty.theoneprobe.apiimpl.styles.ProgressStyle;
 public class ProgressStyleSmelteryFluid extends ProgressStyle {
 
     @Override
-    public int getBorderColor() {
+    public int getBorderColorTop() {
+        return 0x00ffffff;
+    }
+
+    @Override
+    public int getBorderColorBottom() {
         return 0x00ffffff;
     }
 

@@ -6,6 +6,7 @@ import io.github.drmanganese.topaddons.elements.ElementTankGauge;
 import io.github.drmanganese.topaddons.reference.Colors;
 import io.github.drmanganese.topaddons.reference.Names;
 
+import mcjty.theoneprobe.config.ConfigSetup;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -32,6 +33,7 @@ public class AddonForge extends AddonBlank {
     public static IProbeInfo addTankElement(IProbeInfo probeInfo, String name, String fluidName, int amount, int capacity, String suffix, int color, ProbeMode mode, EntityPlayer player) {
         return probeInfo.element(new ElementTankGauge(getElementId(player, "tank_gauge"), name, fluidName, amount, capacity, suffix, color, mode == ProbeMode.EXTENDED));
     }
+
 
     @SuppressWarnings("UnusedReturnValue")
     public static IProbeInfo addTankElement(IProbeInfo probeInfo, Class<? extends TileEntity> clazz, FluidTank fluidTank, int i, ProbeMode mode, EntityPlayer player) {
@@ -65,7 +67,7 @@ public class AddonForge extends AddonBlank {
             return;
 
         /* Disable for enderio, endertanks */
-        String modid = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).getResourceDomain();
+        String modid = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).getNamespace();
         if (modid.equals("enderio") || modid.equals("endertanks"))
             return;
 
@@ -113,6 +115,18 @@ public class AddonForge extends AddonBlank {
     public void addFluidColors() {
         Colors.FLUID_NAME_COLOR_MAP.put(FluidRegistry.WATER.getName(), new Color(52, 95, 218).hashCode());
         Colors.FLUID_NAME_COLOR_MAP.put(FluidRegistry.LAVA.getName(), new Color(230, 145, 60).hashCode());
+
+        //enderio
+        Colors.FLUID_NAME_COLOR_MAP.put("xpjuice", 0xffb4ff00);
+        Colors.FLUID_NAME_COLOR_MAP.put("nutrient_distillation", 0xff75821c);
+        Colors.FLUID_NAME_COLOR_MAP.put("vapor_of_levity", 0xff4d857f);
+        Colors.FLUID_NAME_COLOR_MAP.put("liquid_sunshine", 0xffd6c31e);
+        Colors.FLUID_NAME_COLOR_MAP.put("fire_water", 0xff9e622b);
+        Colors.FLUID_NAME_COLOR_MAP.put("hootch", 0xffd6d6d6);
+        Colors.FLUID_NAME_COLOR_MAP.put("ender_distillation", 0xff23a34a);
+        Colors.FLUID_NAME_COLOR_MAP.put("rocket_fuel", 0xff929270);
+        Colors.FLUID_NAME_COLOR_MAP.put("cloud_seed", 0xff33898d);
+        Colors.FLUID_NAME_COLOR_MAP.put("cloud_seed_concentrated", 0xff566c67);
     }
 
     private boolean showTOPTank(IProbeConfig config, EntityPlayer player) {

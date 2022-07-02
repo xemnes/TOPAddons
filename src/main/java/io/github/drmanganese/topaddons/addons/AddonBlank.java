@@ -3,7 +3,6 @@ package io.github.drmanganese.topaddons.addons;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -14,14 +13,11 @@ import io.github.drmanganese.topaddons.TOPRegistrar;
 import io.github.drmanganese.topaddons.api.ITOPAddon;
 import io.github.drmanganese.topaddons.api.TOPAddon;
 import io.github.drmanganese.topaddons.reference.ElementSync;
-import io.github.drmanganese.topaddons.reference.EnumChip;
 import io.github.drmanganese.topaddons.reference.Reference;
 import io.github.drmanganese.topaddons.styles.ProgressStyleTOPAddonGrey;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import mcjty.theoneprobe.api.*;
 
@@ -69,11 +65,6 @@ public abstract class AddonBlank implements ITOPAddon {
     }
 
     @Override
-    public Map<Class<? extends ItemArmor>, EnumChip> getSpecialHelmets() {
-        return new HashMap<>(0);
-    }
-
-    @Override
     public List<IEntityDisplayOverride> getEntityDisplayOverrides() {
         return Collections.emptyList();
     }
@@ -107,7 +98,7 @@ public abstract class AddonBlank implements ITOPAddon {
     }
 
     IProbeInfo progressBar(IProbeInfo probeInfo, int current, int color1, int color2) {
-        return progressBar(probeInfo, current, color1, color2, "Progress: ");
+        return progressBar(probeInfo, current, color1, color2, "Task: ");
     }
 
     IProbeInfo progressBar(IProbeInfo probeInfo, int current, int color1, int color2, String prefix) {

@@ -2,8 +2,11 @@ package io.github.drmanganese.topaddons.addons;
 
 import io.github.drmanganese.topaddons.api.TOPAddon;
 
+import mcjty.theoneprobe.Tools;
+import mcjty.theoneprobe.api.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -12,13 +15,12 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
-import mcjty.theoneprobe.api.ElementAlignment;
-import mcjty.theoneprobe.api.IProbeConfig;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
-import mcjty.theoneprobe.api.TextStyleClass;
-import mcjty.theoneprobe.config.Config;
+import mcjty.theoneprobe.config.ConfigSetup;
+
+import java.util.Collections;
+import java.util.List;
+
+import static mcjty.theoneprobe.api.TextStyleClass.MODNAME;
 
 @TOPAddon(dependency = "storagedrawers")
 public class AddonStorageDrawers extends AddonBlank {
@@ -32,6 +34,28 @@ public class AddonStorageDrawers extends AddonBlank {
     public void updateConfigs(Configuration config) {
         replaceDrawers = config.get("storagedrawers", "replaceDrawers", true, "Replace Storage Drawers default extended info.").setLanguageKey("topaddons.config:storagedrawers_extended").getBoolean();
     }
+
+//    @Override
+//    public List<IBlockDisplayOverride> getBlockDisplayOverrides() {
+//        return Collections.singletonList(new IBlockDisplayOverride() {
+//            @Override
+//            public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+//                if (blockState.getBlock() == Blocks.END_PORTAL) {
+//                    if (Tools.show(mode, ConfigSetup.getRealConfig().getShowModName())) {
+//                        probeInfo.horizontal()
+//                                .vertical()
+//                                .text(Blocks.END_PORTAL_FRAME.getLocalizedName())
+//                                .text(MODNAME + Tools.getModName(Blocks.END_PORTAL));
+//                    } else {
+//                        probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
+//                                .text(Blocks.END_PORTAL_FRAME.getLocalizedName());
+//                    }
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+//    }
 
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
@@ -55,7 +79,7 @@ public class AddonStorageDrawers extends AddonBlank {
                 }
 
                 if (stacks.size() > 0) {
-                    IProbeInfo vertical = probeInfo.vertical(probeInfo.defaultLayoutStyle().borderColor(Config.chestContentsBorderColor).spacing(0));
+                    IProbeInfo vertical = probeInfo.vertical(probeInfo.defaultLayoutStyle().borderColor(ConfigSetup.chestContentsBorderColor).spacing(0));
                     for (ItemStack stack : stacks) {
                         if (tile.getDrawerAttributes().isUnlimitedVending()) {
                             ItemStack infiStack = stack.copy();
@@ -70,10 +94,11 @@ public class AddonStorageDrawers extends AddonBlank {
                             int mss = stack.getMaxStackSize();
                             int r = stack.getCount() % mss;
                             int q = (stack.getCount() - r) / mss;
-                            vertical.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER)).item(stack)
+                            vertical.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER).spacing(5))
+                                    .item(stack)
                                     .vertical(probeInfo.defaultLayoutStyle().spacing(0))
-                                    .itemLabel(stack)
-                                    .text(TextStyleClass.LABEL + "[" + (stack.getCount() >= mss ? q + "x" + mss + " + " : "") + r + "]");
+                                    .text(stack.getDisplayName() + " ")
+                                    .text(TextStyleClass.LABEL + "[" + (stack.getCount() >= mss ? q + "x" + mss + " + " : "") + r + "]" + " ");
                         }
                     }
                 }
@@ -91,8 +116,7 @@ public class AddonStorageDrawers extends AddonBlank {
     @Override
     public void getProbeConfig(IProbeConfig config, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
         if (world.getTileEntity(data.getPos()) instanceof TileEntityDrawers) {
-            final boolean probeInMain = player.getHeldItemMainhand().getItem() == PROBE;
-            if (replaceDrawers && player.isSneaking() && !(Config.needsProbe == Config.PROBE_NEEDEDFOREXTENDED && !probeInMain) || Config.extendedInMain && probeInMain) {
+            if (replaceDrawers && player.isSneaking() && !(ConfigSetup.needsProbe == ConfigSetup.PROBE_NEEDEDFOREXTENDED) || ConfigSetup.extendedInMain) {
                 config.showChestContents(IProbeConfig.ConfigMode.NOT);
             } else {
                 config.showChestContents(IProbeConfig.ConfigMode.EXTENDED);

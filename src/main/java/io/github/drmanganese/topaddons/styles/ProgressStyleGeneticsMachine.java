@@ -22,11 +22,6 @@ public class ProgressStyleGeneticsMachine extends ProgressStyle {
     }
 
     @Override
-    public int getBorderColor() {
-        return 0xff1a233c;
-    }
-
-    @Override
     public int getFilledColor() {
         return phase ? 0xff414349 : 0xff53555b;
     }

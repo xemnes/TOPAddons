@@ -5,11 +5,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
 
-import io.github.drmanganese.topaddons.addons.subaddons.binniesmods.SubAddonBotany;
 import io.github.drmanganese.topaddons.addons.subaddons.binniesmods.SubAddonGenetics;
 import io.github.drmanganese.topaddons.addons.subaddons.binniesmods.SubAddonTrees;
 import io.github.drmanganese.topaddons.api.TOPAddon;
-import io.github.drmanganese.topaddons.elements.binnies.ElementFlowerColor;
 import io.github.drmanganese.topaddons.reference.Colors;
 
 import java.util.ArrayList;
@@ -30,9 +28,6 @@ public class AddonBinniesMods extends AddonBlank {
     private final Set<AddonBlank> SUB_ADDONS = new HashSet<>();
 
     public AddonBinniesMods() {
-        if (Loader.isModLoaded("botany")) {
-            SUB_ADDONS.add(new SubAddonBotany());
-        }
 
         if (Loader.isModLoaded("genetics")) {
             SUB_ADDONS.add(new SubAddonGenetics());
@@ -71,10 +66,5 @@ public class AddonBinniesMods extends AddonBlank {
         for (AddonBlank subAddon : SUB_ADDONS) {
             subAddon.getProbeConfig(config, player, world, blockState, data);
         }
-    }
-
-    @Override
-    public void registerElements() {
-        registerElement("flowerColor", ElementFlowerColor::new);
     }
 }

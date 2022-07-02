@@ -1,14 +1,11 @@
 package io.github.drmanganese.topaddons.api;
 
-import net.minecraft.item.ItemArmor;
 import net.minecraftforge.common.config.Configuration;
 
 import io.github.drmanganese.topaddons.AddonManager;
 import io.github.drmanganese.topaddons.addons.AddonBlank;
-import io.github.drmanganese.topaddons.reference.EnumChip;
 
 import java.util.List;
-import java.util.Map;
 
 import mcjty.theoneprobe.api.IBlockDisplayOverride;
 import mcjty.theoneprobe.api.IEntityDisplayOverride;
@@ -53,11 +50,6 @@ public interface ITOPAddon extends IProbeInfoProvider, IProbeInfoEntityProvider,
      * {@link io.github.drmanganese.topaddons.reference.Names}.
      */
     void addTankNames();
-
-    /**
-     * @return A {@link Map} containing {@link ItemArmor}, {@link EnumChip} pairs.
-     */
-    Map<Class<? extends ItemArmor>, EnumChip> getSpecialHelmets();
 
     /**
      * @return A list of {@link IBlockDisplayOverride}.

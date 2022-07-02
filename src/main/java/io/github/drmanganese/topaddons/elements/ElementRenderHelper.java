@@ -21,6 +21,10 @@ public final class ElementRenderHelper {
         RenderHelper.drawBeveledBox(x, y, x2, y2, 0xff969696, 0xff969696, 0x44969696);
     }
 
+    public static void drawBox(int x, int y, int x2, int y2, int borderTop, int borderBottom, int backgroundColor) {
+        RenderHelper.drawThickBeveledBoxGradient(x, y, x2, y2, 1, borderTop, borderBottom, backgroundColor);
+    }
+
 
     public static Entity getClientEntityInstance(EntityEntry entry) {
         return entry.newInstance(Minecraft.getMinecraft().world);

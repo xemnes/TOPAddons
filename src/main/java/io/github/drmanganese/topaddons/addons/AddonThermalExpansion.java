@@ -37,22 +37,26 @@ public class AddonThermalExpansion extends AddonBlank {
         Colors.FLUID_NAME_COLOR_MAP.put("crude_oil", 0xff232323);
         Colors.FLUID_NAME_COLOR_MAP.put("redstone", 0xff8a0a09);
         Colors.FLUID_NAME_COLOR_MAP.put("glowstone", 0xffc6af07);
-        Colors.FLUID_NAME_COLOR_MAP.put("ender", 0xff11605e);
-        Colors.FLUID_NAME_COLOR_MAP.put("pyrotheum", 0xffddbb1e);
+        Colors.FLUID_NAME_COLOR_MAP.put("ender", 0xff0c5f7d);
+        Colors.FLUID_NAME_COLOR_MAP.put("pyrotheum", 0xffffaa00);
         Colors.FLUID_NAME_COLOR_MAP.put("cryotheum", 0xff0ebeca);
         Colors.FLUID_NAME_COLOR_MAP.put("aerotheum", 0xff787654);
-        Colors.FLUID_NAME_COLOR_MAP.put("petrotheum", 0xff191310);
+        Colors.FLUID_NAME_COLOR_MAP.put("petrotheum", 0xff5f414a);
         Colors.FLUID_NAME_COLOR_MAP.put("mana", 0xff095277);
-        Colors.FLUID_NAME_COLOR_MAP.put("steam", 0xff838582);
+        Colors.FLUID_NAME_COLOR_MAP.put("steam", 0xffcdcdcd);
         Colors.FLUID_NAME_COLOR_MAP.put("creosote", 0xff515502);
         Colors.FLUID_NAME_COLOR_MAP.put("coal", 0xff393939);
         Colors.FLUID_NAME_COLOR_MAP.put("refined_oil", 0xffc36a1f);
         Colors.FLUID_NAME_COLOR_MAP.put("refined_fuel", 0xffc3a515);
+        Colors.FLUID_NAME_COLOR_MAP.put("refined_biofuel", 0xffa0c72c);
+        Colors.FLUID_NAME_COLOR_MAP.put("biocrude", 0xff407715);
+        Colors.FLUID_NAME_COLOR_MAP.put("seed_oil", 0xff88aa27);
         Colors.FLUID_NAME_COLOR_MAP.put("sap", 0xff7e5215);
         Colors.FLUID_NAME_COLOR_MAP.put("syrup", 0xff863903);
         Colors.FLUID_NAME_COLOR_MAP.put("resin", 0xffb57c04);
         Colors.FLUID_NAME_COLOR_MAP.put("tree_oil", 0xffb49645);
         Colors.FLUID_NAME_COLOR_MAP.put("mushroom_stew", 0xffc8a98f);
+        Colors.FLUID_NAME_COLOR_MAP.put("experience", 0xffb4ff00);
     }
 
     @Override
@@ -64,8 +68,9 @@ public class AddonThermalExpansion extends AddonBlank {
             // Progress bar with percentage and RF/t
             if (machine.isActive) {
                 IProbeInfo hori = probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER).spacing(5));
-                progressBar(hori, machine.getScaledProgress(100), PROGRESS_COLOURS[machine.getLevel()][0], PROGRESS_COLOURS[machine.getLevel()][1]);
-                hori.text(TextStyleClass.LABEL + "@ " + TextStyleClass.INFO + machine.getInfoEnergyPerTick() + " RF/t");
+                progressBar(hori, machine.getScaledProgress(100), PROGRESS_COLOURS[machine.getLevel()][0], PROGRESS_COLOURS[machine.getLevel()][1], "Task: ");
+                probeInfo.text(TextStyleClass.LABEL + "@ " + TextStyleClass.INFO + machine.getInfoEnergyPerTick() + " RF/t");
+
             }
         }
 

@@ -25,7 +25,7 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeHitEntityData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
-import mcjty.theoneprobe.config.Config;
+import mcjty.theoneprobe.config.ConfigSetup;
 
 import static mcjty.theoneprobe.api.TextStyleClass.MODNAME;
 
@@ -44,7 +44,7 @@ public class AddonVanilla extends AddonBlank {
             @Override
             public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
                 if (blockState.getBlock() == Blocks.END_PORTAL) {
-                    if (Tools.show(mode, Config.getRealConfig().getShowModName())) {
+                    if (Tools.show(mode, ConfigSetup.getRealConfig().getShowModName())) {
                         probeInfo.horizontal()
                                 .vertical()
                                 .text(Blocks.END_PORTAL_FRAME.getLocalizedName())

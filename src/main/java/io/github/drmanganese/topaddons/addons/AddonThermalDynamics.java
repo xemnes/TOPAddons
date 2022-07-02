@@ -24,13 +24,13 @@ public class AddonThermalDynamics extends AddonBlank {
         if (tile instanceof TileTransportDuct && !(tile instanceof TileTransportDuct.LongRange) && !(tile instanceof TileTransportDuct.Linking)) {
             DuctUnitTransport unit = (DuctUnitTransport) ((TileTransportDuct) tile).getDuctUnits().iterator().next();
             if (unit.isOutput()) {
-                IProbeInfo hori = probeInfo.vertical(probeInfo.defaultLayoutStyle().borderColor(0xffbcece0)).horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+                IProbeInfo hori = probeInfo.vertical(probeInfo.defaultLayoutStyle().borderColor(0xff56caad)).horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
 
                 if (!unit.data.item.isEmpty()) {
                     hori.item(unit.data.item);
                 }
 
-                hori.text(!unit.data.name.isEmpty() ? unit.data.name : "Unnamed");
+                hori.text(!unit.data.name.isEmpty() ? " " + unit.data.name + " " : " " + "Unnamed" + " ");
             }
         }
     }

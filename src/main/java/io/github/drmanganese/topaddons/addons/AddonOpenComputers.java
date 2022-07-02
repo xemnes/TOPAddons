@@ -9,6 +9,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import io.github.drmanganese.topaddons.TOPAddons;
@@ -49,7 +50,7 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.api.TextStyleClass;
 import mcjty.theoneprobe.apiimpl.elements.ElementProgress;
-import mcjty.theoneprobe.config.Config;
+import mcjty.theoneprobe.config.ConfigSetup;
 
 import static mcjty.theoneprobe.api.TextStyleClass.MODNAME;
 import static mcjty.theoneprobe.api.TextStyleClass.PROGRESS;
@@ -61,7 +62,6 @@ public class AddonOpenComputers extends AddonBlank {
 
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
-        boolean analyzer = holdingAnalyzer(player);
 
         TileEntity tile = world.getTileEntity(data.getPos());
 
@@ -87,7 +87,10 @@ public class AddonOpenComputers extends AddonBlank {
                 }
 
                 if (((Environment) tile).node().reachability() != Visibility.None) {
-                    textPrefixed(probeInfo, "{*option.oc.address*}", analyzer ? ((Environment) tile).node().address() : ((Environment) tile).node().address().substring(0, 8));
+                    textPrefixed(probeInfo, "{*option.oc.address*}", mode == ProbeMode.EXTENDED ? ((Environment) tile).node().address() : ((Environment) tile).node().address().substring(0, 8));
+                    if (mode == ProbeMode.NORMAL) {
+                        probeInfo.textSmall(TextFormatting.GRAY + "Sneak for full Address");
+                    }
                 }
 
                 if (tile instanceof Component) {
@@ -154,7 +157,10 @@ public class AddonOpenComputers extends AddonBlank {
                     if (server != null) {
                         IProbeInfo vert = probeInfo.vertical(probeInfo.defaultLayoutStyle().borderColor(0xff448844));
                         vert.text(TextStyleClass.INFO + "{*topaddons.opencomputers:server*} " + serverIndex);
-                        textPrefixed(vert, "{*option.oc.address*}", analyzer ? server.node().address() : server.node().address().substring(0, 8));
+                        textPrefixed(vert, "{*option.oc.address*}", mode == ProbeMode.EXTENDED ? server.node().address() : server.node().address().substring(0, 8));
+                        if (mode == ProbeMode.NORMAL) {
+                            probeInfo.textSmall(TextFormatting.GRAY + "Sneak for full Address");
+                        }
 
                         if (server.node().host() instanceof Machine) {
                             Machine machine = (Machine) server.node().host();
@@ -177,19 +183,22 @@ public class AddonOpenComputers extends AddonBlank {
             if (drone.node() != null) {
                 Node node = ((Drone) entity).node();
 
-                if (Config.getRealConfig().getRFMode() == 1) {
+                if (ConfigSetup.getRealConfig().getRFMode() == 1) {
                     probeInfo.progress(drone.globalBuffer(), drone.globalBufferSize(),
                             probeInfo.defaultProgressStyle()
                                     .suffix("RF")
-                                    .filledColor(Config.rfbarFilledColor)
-                                    .alternateFilledColor(Config.rfbarAlternateFilledColor)
-                                    .borderColor(Config.rfbarBorderColor)
-                                    .numberFormat(Config.rfFormat));
+                                    .filledColor(ConfigSetup.rfbarFilledColor)
+                                    .alternateFilledColor(ConfigSetup.rfbarAlternateFilledColor)
+                                    .borderColorTop(ConfigSetup.rfbarBorderColorTop)
+                                    .numberFormat(ConfigSetup.rfFormat));
                 } else {
-                    probeInfo.text(PROGRESS + "RF: " + ElementProgress.format(drone.globalBuffer(), Config.rfFormat, "RF"));
+                    probeInfo.text(PROGRESS + "RF: " + ElementProgress.format(drone.globalBuffer(), ConfigSetup.rfFormat, "RF"));
                 }
 
-                textPrefixed(probeInfo, "{*option.oc.address*}", holdingAnalyzer(player) ? node.address() : node.address().substring(0, 8));
+                textPrefixed(probeInfo, "{*option.oc.address*}", mode == ProbeMode.EXTENDED ? node.address() : node.address().substring(0, 8));
+                if (mode == ProbeMode.NORMAL) {
+                    probeInfo.textSmall(TextFormatting.GRAY + "Sneak for full Address");
+                }
 
                 if (drone.control().tank().tankCount() > 0) {
                     for (int i = 0; i < drone.control().tank().tankCount(); i++) {
@@ -205,7 +214,7 @@ public class AddonOpenComputers extends AddonBlank {
                     }
 
                     if (stacks.size() > 0) {
-                        IProbeInfo hori = probeInfo.horizontal(probeInfo.defaultLayoutStyle().borderColor(Config.chestContentsBorderColor));
+                        IProbeInfo hori = probeInfo.horizontal(probeInfo.defaultLayoutStyle().borderColor(ConfigSetup.chestContentsBorderColor));
                         int i = 0;
                         for (ItemStack stack : stacks) {
                             if (i == drone.control().selectedSlot()) {
@@ -241,16 +250,16 @@ public class AddonOpenComputers extends AddonBlank {
     public List<IBlockDisplayOverride> getBlockDisplayOverrides() {
         return Collections.singletonList((mode, probeInfo, player, world, blockState, data) -> {
             if (blockState.getBlock() instanceof SimpleBlock) {
-                if (Tools.show(mode, Config.getRealConfig().getShowModName())) {
+                if (Tools.show(mode, ConfigSetup.getRealConfig().getShowModName())) {
                     probeInfo.horizontal()
                             .item(data.getPickBlock())
                             .vertical()
-                            .text(data.getPickBlock().getRarity().rarityColor + data.getPickBlock().getDisplayName())
+                            .text(data.getPickBlock().getRarity().color + data.getPickBlock().getDisplayName())
                             .text(MODNAME + Tools.getModName(((ItemBlock) data.getPickBlock().getItem()).getBlock()));
                 } else {
                     probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
                             .item(data.getPickBlock())
-                            .text(data.getPickBlock().getRarity().rarityColor + data.getPickBlock().getDisplayName());
+                            .text(data.getPickBlock().getRarity().color + data.getPickBlock().getDisplayName());
                 }
 
                 return true;
@@ -263,16 +272,16 @@ public class AddonOpenComputers extends AddonBlank {
     public List<IEntityDisplayOverride> getEntityDisplayOverrides() {
         return Collections.singletonList((mode, probeInfo, player, world, entity, data) -> {
             if (entity instanceof Drone) {
-                if (Tools.show(mode, Config.getRealConfig().getShowModName())) {
+                if (Tools.show(mode, ConfigSetup.getRealConfig().getShowModName())) {
                     probeInfo.horizontal()
                             .entity(entity)
                             .vertical()
-                            .text(EnumRarity.values()[((Drone) entity).tier()].rarityColor + ((Drone) entity).info().name())
+                            .text(EnumRarity.values()[((Drone) entity).tier()].color + ((Drone) entity).info().name())
                             .text(TextStyleClass.MODNAME + Tools.getModName(entity));
                 } else {
                     probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
                             .entity(entity)
-                            .text(EnumRarity.values()[((Drone) entity).tier()].rarityColor + ((Drone) entity).info().name());
+                            .text(EnumRarity.values()[((Drone) entity).tier()].color + ((Drone) entity).info().name());
                 }
 
                 return true;
@@ -282,14 +291,4 @@ public class AddonOpenComputers extends AddonBlank {
         });
     }
 
-    private boolean holdingAnalyzer(EntityPlayer player) {
-        for (EnumHand hand : EnumHand.values()) {
-            ItemStack itemStack = player.getHeldItem(hand);
-            if (!itemStack.isEmpty() && itemStack.getItem() == Items.get("analyzer").item()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

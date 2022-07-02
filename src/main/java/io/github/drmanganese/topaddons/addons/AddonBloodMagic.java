@@ -1,16 +1,18 @@
 package io.github.drmanganese.topaddons.addons;
 
+import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import io.github.drmanganese.topaddons.api.TOPAddon;
+import io.github.drmanganese.topaddons.elements.ElementRenderHelper;
 import io.github.drmanganese.topaddons.elements.bloodmagic.ElementAltarCrafting;
 import io.github.drmanganese.topaddons.elements.bloodmagic.ElementNodeFilter;
-import io.github.drmanganese.topaddons.reference.EnumChip;
 import io.github.drmanganese.topaddons.reference.Names;
 
+import mcjty.theoneprobe.api.*;
+import mcjty.theoneprobe.config.ConfigSetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -30,8 +32,6 @@ import WayofTime.bloodmagic.core.data.Binding;
 import WayofTime.bloodmagic.core.data.SoulNetwork;
 import WayofTime.bloodmagic.iface.IBindable;
 import WayofTime.bloodmagic.item.ItemBloodOrb;
-import WayofTime.bloodmagic.item.armour.ItemLivingArmour;
-import WayofTime.bloodmagic.item.armour.ItemSentientArmour;
 import WayofTime.bloodmagic.item.sigil.ItemSigilBase;
 import WayofTime.bloodmagic.item.sigil.ItemSigilHolding;
 import WayofTime.bloodmagic.orb.IBloodOrb;
@@ -44,16 +44,8 @@ import WayofTime.bloodmagic.util.helper.NetworkHelper;
 import WayofTime.bloodmagic.util.helper.NumeralHelper;
 import com.google.common.collect.Lists;
 import mcjty.theoneprobe.Tools;
-import mcjty.theoneprobe.api.ElementAlignment;
-import mcjty.theoneprobe.api.IBlockDisplayOverride;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
-import mcjty.theoneprobe.api.TextStyleClass;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static mcjty.theoneprobe.api.TextStyleClass.MODNAME;
 
@@ -91,14 +83,6 @@ public class AddonBloodMagic extends AddonBlank {
     }
 
     @Override
-    public Map<Class<? extends ItemArmor>, EnumChip> getSpecialHelmets() {
-        Map<Class<? extends ItemArmor>, EnumChip> map = new HashMap<>();
-        map.put(ItemLivingArmour.class, EnumChip.STANDARD);
-        map.put(ItemSentientArmour.class, EnumChip.STANDARD);
-        return map;
-    }
-
-    @Override
     public List<IBlockDisplayOverride> getBlockDisplayOverrides() {
         return Lists.newArrayList((IBlockDisplayOverride) (mode, probeInfo, player, world, blockState, data) -> {
             /*
@@ -109,7 +93,7 @@ public class AddonBloodMagic extends AddonBlank {
                 ItemStack mimicStack = ((TileMimic) world.getTileEntity(data.getPos())).getStackInSlot(0);
 
                 if (!mimicStack.isEmpty() && mimicStack.getItem() instanceof ItemBlock) {
-                    if (Tools.show(mode, mcjty.theoneprobe.config.Config.getRealConfig().getShowModName())) {
+                    if (Tools.show(mode, mcjty.theoneprobe.config.ConfigSetup.getRealConfig().getShowModName())) {
                         probeInfo.horizontal()
                                 .item(mimicStack)
                                 .vertical()
@@ -159,8 +143,13 @@ public class AddonBloodMagic extends AddonBlank {
                     }
                 }
             }
+            else if (tile instanceof IBloodAltar && !holdingSeer) {
+                probeInfo.textSmall(TextFormatting.GRAY + "More info: Held Seer's Sigil required");
+            }
         }
-
+        else if (tile instanceof IBloodAltar && !holdingDivine) {
+            probeInfo.textSmall(TextFormatting.GRAY + "More info: Held Sigil required");
+        }
 
         if (tile instanceof TileFilteredRoutingNode && !(tile instanceof IMasterRoutingNode)) {
             TileFilteredRoutingNode node = (TileFilteredRoutingNode) tile;
@@ -180,6 +169,9 @@ public class AddonBloodMagic extends AddonBlank {
             textPrefixed(probeInfo, "{*topaddons.bloodmagic:tranquility*}", Integer.toString((int) ((100D * (int) (100 * altar.tranquility)) / 100D)));
             textPrefixed(probeInfo, "{*topaddons.bloodmagic:bonus*}", (int) (altar.incenseAddition * 100) + "%");
         }
+        else if (tile instanceof TileIncenseAltar && !holdingDivine) {
+            probeInfo.textSmall(TextFormatting.GRAY + "More info: Held Sigil required");
+        }
 
 
         if (tile instanceof TileMimic && seeMimickWithSigil && holdingSeer) {
@@ -187,6 +179,9 @@ public class AddonBloodMagic extends AddonBlank {
             if (!mimicStack.isEmpty()) {
                 probeInfo.text(TextFormatting.GRAY + data.getPickBlock().getDisplayName());
             }
+        }
+        else if (tile instanceof TileMimic && !holdingSeer) {
+            probeInfo.textSmall(TextFormatting.GRAY + "More info: Held Seer's Sigil required");
         }
     }
 
@@ -212,5 +207,18 @@ public class AddonBloodMagic extends AddonBlank {
 
     private void addAltarCraftingElement(IProbeInfo probeInfo, ItemStack input, ItemStack result, int progress, int required, float consumption, EntityPlayer player) {
         probeInfo.element(new ElementAltarCrafting(getElementId(player, "altar_crafting"), input, result, progress, required * input.getCount(), consumption));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    public void getProbeConfig(IProbeConfig config, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+        boolean holdingSeer = !requireSigil || holdingSigil(player, (ItemSigilBase) SIGIL_SEER);
+        if (world.getTileEntity(data.getPos()) instanceof TileMimic) {
+            if (holdingSeer) {
+                config.showChestContents(IProbeConfig.ConfigMode.EXTENDED);
+            } else {
+                config.showChestContents(IProbeConfig.ConfigMode.NOT);
+            }
+        }
     }
 }

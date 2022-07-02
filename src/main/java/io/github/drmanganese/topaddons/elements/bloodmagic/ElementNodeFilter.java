@@ -35,16 +35,16 @@ public class ElementNodeFilter implements IElement {
     @Override
     public void render(int x, int y) {
         Minecraft mc = Minecraft.getMinecraft();
-        ElementRenderHelper.drawGreyBox(x, y, x + 18, y + 18);
-        RenderHelper.renderItemStack(mc, mc.getRenderItem(), inventoryOnSide, x + 1, y + 1, "");
-        RenderHelper.renderItemStack(mc, mc.getRenderItem(), filterStack, x + 18, y + 1, "");
-        ElementRenderHelper.drawGreyBox(x + 34, y, x + 180, y + 18);
+        ElementRenderHelper.drawBox(x, y, x + 20, y + 20, 0xffff3434, 0xffa21a1a, 0x33a21a1a);
+        RenderHelper.renderItemStack(mc, mc.getRenderItem(), inventoryOnSide, x + 2, y + 2, "");
+        RenderHelper.renderItemStack(mc, mc.getRenderItem(), filterStack, x + 19, y + 2, "");
+        ElementRenderHelper.drawBox(x + 34, y, x + 182, y + 20, 0xffcf34ff, 0xff681aa2, 0x33681aa2);
 
         ItemInventory filterInv = new ItemInventory(filterStack, 9, "");
         int xOffset = 0;
         for (int i = 0; i < 9; i++) {
             if (filterInv.getStackInSlot(i) != null) {
-                RenderHelper.renderItemStack(mc, mc.getRenderItem(), filterInv.getStackInSlot(i), x + 35 + xOffset, y + 1, "");
+                RenderHelper.renderItemStack(mc, mc.getRenderItem(), filterInv.getStackInSlot(i), x + 35 + xOffset + 1, y + 2, "");
                 xOffset += 16;
             }
         }
@@ -57,7 +57,7 @@ public class ElementNodeFilter implements IElement {
 
     @Override
     public int getHeight() {
-        return 18;
+        return 21;
     }
 
     @Override

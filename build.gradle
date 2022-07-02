@@ -36,16 +36,8 @@ repositories {
         url = "http://chickenbones.net/maven"
     }
     maven {
-        name = "Forestry, IC², Binnie's"
-        url = "http://maven.ic2.player.to"
-    }
-    maven {
         name = "Tinkers', JEI"
         url = "http://dvs1.progwml6.com/files/maven"
-    }
-    maven {
-        name = "Blood Magic"
-        url = "http://tehnut.info/maven/"
     }
     maven {
         name = "OpenComputers"
@@ -55,6 +47,9 @@ repositories {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
     }
+    maven {
+        url = "https://www.cursemaven.com"
+    }
 }
 
 configurations.all {
@@ -62,31 +57,23 @@ configurations.all {
 }
 
 dependencies {
-    deobfCompile("mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.22-13") { transitive = false }
+    compile files("E:/.minecraft/realmofstorms/source files/TheOneProbe-1.12/build/libs/theoneprobe-1.12-1.4.28.jar")
+//    compileOnly("mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.22-13") { transitive = false }
 
-    deobfCompile "net.industrial-craft:industrialcraft-2:2.8.75-ex112"
+    deobfCompile("curse.maven:industrial-craft-242638:3838713")
+
     deobfCompile "li.cil.oc:OpenComputers:MC1.12.1-1.7.+"
-    deobfCompile "moo-fluids:MooFluids:1.12.2:1.7.11.02a"
-    deobfCompile "roost:roost:1.12:1.3.0"
-    deobfCompile "lycanites-mobs:lycanitesmobs:1.12.2:2.0.1.2"
-    deobfCompile "rustic:rustic:1.1.1"
-    deobfCompile "architecturecraft-tridev:architecturecraft:1.12:3.98"
-    deobfCompile "unlimited-chisel-works:UnlimitedChiselWorks:0.3.0"
 
-    deobfCompile "net.sengir.forestry:forestry_1.12.2:5.8.0.277+"
-    compileOnly("binnie:binnie-mods-1.12.2:2.5.0.164") { transitive = false }
+    compileOnly("curse.maven:buildcraft-61811:3204475")
+
+    deobfCompile("curse.maven:forestry-59751:2918418")
+    deobfCompile("curse.maven:binnie-mods-223525:2916129") { transitive = false }
 
     deobfCompile "slimeknights.mantle:Mantle:1.12-1.3.3.55"
     deobfCompile("slimeknights:TConstruct:1.12.2-2.13.0.179") { transitive = false }
 
-    runtime "reborncore:RebornCore-1.12.2:3.16.4.478:universal"
-    deobfCompile "steves-carts-reborn:StevesCarts:1.12.2:2.4.18.92"
-
-    runtime "info.amerifrance.guideapi:Guide-API:1.12-2.1.+"
-    deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.12.2-2.2.+"
-
-    runtime "cucumber:Cucumber:1.12.2:1.1.3"
-    deobfCompile "mystical-agriculture:MysticalAgriculture:1.12.2:1.7.3"
+    runtime "curse.maven:guideapi-228832:2645992"
+    deobfCompile "curse.maven:bloodmagic-224791:2822288"
 
     runtime "team.chisel.ctm:CTM:MC1.12.2-0.3.3.22"
     deobfCompile "chisel:Chisel:MC1.12.2:1.0.1.44"
@@ -94,16 +81,16 @@ dependencies {
     compile "chameleon:Chameleon:1.12:4.1.3"
     deobfCompile "storage-drawers:StorageDrawers:1.12.2:5.4.0"
 
-    compile "bdlib:bdlib-1.14.3.12:mc1.12.2:dev"
-    compile "advanced-generators:generators-0.9.20.12:mc1.12.2:dev"
-
     runtime "codechicken:CodeChickenLib:1.12.2-3.2+:universal"
     runtime "cofh:CoFHWorld:1.12.2-1.2+:universal"
     runtime "cofh:ThermalFoundation:1.12.2-2.6.3.27:universal"
-    compile "cofh:ThermalExpansion:1.12.2-5.5.4.43:deobf"
-    compile "cofh:ThermalDynamics:1.12.2-2.5.5.21:deobf"
-    compile "cofh:CoFHCore:1.12.2-4.6.3.27:deobf"
-    compile "cofh:RedstoneFlux:1.12-2.1.0.+:universal"
+    deobfCompile "cofh:ThermalExpansion:1.12.2-5.5.4.43:universal"
+    deobfCompile "cofh:ThermalDynamics:1.12.2-2.5.5.21:universal"
+    deobfCompile "cofh:CoFHCore:1.12.2-4.6.3.27:universal"
+    deobfCompile "cofh:RedstoneFlux:1.12-2.1.0.+:universal"
+
+    runtime "curse.maven:enderio1-64578:3328811"
+    runtime "curse.maven:endercore1-231868:2972849"
 
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 }
@@ -157,7 +144,6 @@ task generateGitChangelog(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelog
 }
 
 curseforge {
-    apiKey = curseforgeToken
     project {
         id = "247111"
         changelogType = "markdown"

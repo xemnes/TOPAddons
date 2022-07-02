@@ -47,7 +47,7 @@ public class ElementAltarCrafting implements IElement {
         Minecraft mc = Minecraft.getMinecraft();
         RenderHelper.renderItemStack(mc, mc.getRenderItem(), input, x, y, "");
         RenderHelper.renderItemStack(mc, mc.getRenderItem(), result, x + 84, y, "");
-        ElementRenderHelper.drawGreyBox(x + 18, y + 3, x + 82, y + 13);
+        RenderHelper.drawThickBeveledBoxGradient(x + 18, y + 3, x + 82, y + 13, 1, 0xffff681c, 0xff9a380e, 0xff240000);
 
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

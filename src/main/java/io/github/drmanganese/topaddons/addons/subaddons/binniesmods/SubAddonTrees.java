@@ -16,10 +16,6 @@ import java.util.List;
 import binnie.core.machines.Machine;
 import binnie.core.machines.TileEntityMachine;
 import binnie.core.machines.power.ComponentProcess;
-import binnie.extratrees.blocks.BlockHops;
-import binnie.extratrees.machines.brewery.BreweryLogic;
-import binnie.extratrees.machines.distillery.DistilleryLogic;
-import binnie.extratrees.machines.fruitpress.FruitPressLogic;
 import binnie.extratrees.machines.lumbermill.LumbermillLogic;
 import com.google.common.collect.Lists;
 import mcjty.theoneprobe.Tools;
@@ -29,7 +25,7 @@ import mcjty.theoneprobe.api.IProbeConfig;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
-import mcjty.theoneprobe.config.Config;
+import mcjty.theoneprobe.config.ConfigSetup;
 import static mcjty.theoneprobe.api.TextStyleClass.*;
 
 public class SubAddonTrees extends AddonBlank {
@@ -38,10 +34,7 @@ public class SubAddonTrees extends AddonBlank {
     private static final BlockCrops HOPS = null;
 
     private static final List<Class<? extends ComponentProcess>> machineProcesses = Lists.newArrayList(
-            LumbermillLogic.class,
-            DistilleryLogic.class,
-            FruitPressLogic.class,
-            BreweryLogic.class
+            LumbermillLogic.class
     );
 
     @Override
@@ -70,39 +63,8 @@ public class SubAddonTrees extends AddonBlank {
     public List<IBlockDisplayOverride> getBlockDisplayOverrides() {
         return Collections.singletonList((mode, probeInfo, player, world, blockState, data) -> {
             //noinspection ConstantConditions
-            if (blockState.getBlock() == HOPS && blockState.getValue(BlockHops.HALF) == BlockHops.HopsHalf.UP) {
-                if (Tools.show(mode, Config.getRealConfig().getShowModName())) {
-                    probeInfo.horizontal()
-                            .item(data.getPickBlock())
-                            .vertical()
-                            .text(data.getPickBlock().getDisplayName())
-                            .text(MODNAME + Tools.getModName(HOPS));
-                } else {
-                    probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
-                            .item(data.getPickBlock())
-                            .text(data.getPickBlock().getDisplayName());
-                }
-
-                IBlockState belowState = world.getBlockState(data.getPos().down());
-                int age = ((BlockHops) blockState.getBlock()).getAge(belowState);
-                int maxAge = ((BlockHops) blockState.getBlock()).getMaxAge();
-                if (age == maxAge) {
-                    probeInfo.text(OK + "Fully grown");
-                } else {
-                    probeInfo.text(LABEL + "Growth: " + WARNING + (age * 100) / maxAge + "%");
-                }
-
-                return true;
-            }
 
             return false;
         });
-    }
-
-    @Override
-    public void getProbeConfig(IProbeConfig config, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
-        if (blockState.getBlock() == HOPS && blockState.getValue(BlockHops.HALF) == BlockHops.HopsHalf.UP) {
-            config.showCropPercentage(IProbeConfig.ConfigMode.NOT);
-        }
     }
 }

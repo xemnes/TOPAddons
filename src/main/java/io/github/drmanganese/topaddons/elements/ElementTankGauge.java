@@ -1,5 +1,7 @@
 package io.github.drmanganese.topaddons.elements;
 
+import mcjty.theoneprobe.api.NumberFormat;
+import mcjty.theoneprobe.apiimpl.elements.ElementProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -50,22 +52,17 @@ public class ElementTankGauge implements IElement {
     @Override
     public void render(int x, int y) {
         if (capacity > 0) {
-            ElementProgressRender.render(new ProgressStyleTank().filledColor(color1).alternateFilledColor(color2), amount, capacity, x, y, 100, sneaking ? 12 : 8);
+            ElementProgressRender.render(new ProgressStyleTank().filledColor(color1).alternateFilledColor(color2), amount, capacity, x, y, 100, 14);
         } else {
-            ElementProgressRender.render(new ProgressStyleTank(), amount, capacity, x, y, 100, sneaking ? 12 : 8);
+            ElementProgressRender.render(new ProgressStyleTank(), amount, capacity, x, y, 100, 14);
         }
 
-        if (sneaking) {
-            for (int i = 1; i < 10; i++) {
-                RenderHelper.drawVerticalLine(x + i * 10, y + 1, y + (i == 5 ? 11 : 6), 0xff767676);
-            }
 
-            ElementTextRender.render((capacity > 0) ? amount + "/" + capacity + " " + suffix : I18n.format("topaddons:tank_empty"), x + 3, y + 2);
-            drawSmallText(x + 99 - Minecraft.getMinecraft().fontRenderer.getStringWidth(fluidName) / 2, y + 13, fluidName, color1);
-        }
+            RenderHelper.renderText(Minecraft.getMinecraft(), x + 3, y + 3, (capacity > 0) ? ElementProgress.format(amount, amount > 9999 ? NumberFormat.COMPACT : NumberFormat.FULL, "") + "/" + ElementProgress.format(capacity, capacity > 9999 ? NumberFormat.COMPACT : NumberFormat.FULL, "") + " " + suffix : I18n.format("topaddons:tank_empty"), RenderHelper.renderColorToHSB(color1, 0.3f, 1.0f));
+            drawSmallText(x + 99 - Minecraft.getMinecraft().fontRenderer.getStringWidth(fluidName) / 2, y + 15, fluidName, RenderHelper.renderBarTextColor(color1));
 
-        drawSmallText(sneaking ? x + 1 :  x +2, sneaking ? y + 13 : y + 2, tankName, 0xffffffff);
-        RenderHelper.drawVerticalLine(x + 99, y, y + (sneaking ? 12 : 8), 0xff969696);
+
+        drawSmallText(x + 1, y + 15, tankName, 0xffffffff);
     }
 
     @Override
@@ -75,7 +72,7 @@ public class ElementTankGauge implements IElement {
 
     @Override
     public int getHeight() {
-        return (sneaking) ? 18 : 8;
+        return 20;
     }
 
     @Override

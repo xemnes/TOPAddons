@@ -1,11 +1,9 @@
 package io.github.drmanganese.topaddons;
 
 import io.github.drmanganese.topaddons.config.ConfigClient;
-import io.github.drmanganese.topaddons.config.HelmetConfig;
 import io.github.drmanganese.topaddons.config.capabilities.CapEvents;
 import io.github.drmanganese.topaddons.config.capabilities.ClientOptsCapability;
 import io.github.drmanganese.topaddons.config.capabilities.IClientOptsCapability;
-import io.github.drmanganese.topaddons.helmets.CommandTOPHelmet;
 import io.github.drmanganese.topaddons.network.PacketHandler;
 import io.github.drmanganese.topaddons.proxy.IProxy;
 import io.github.drmanganese.topaddons.reference.Reference;
@@ -19,7 +17,6 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -98,25 +95,18 @@ public class TOPAddons {
     }
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
-        HelmetConfig.loadHelmetBlacklist(config);
-    }
-
-    @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
     }
 
     @Mod.EventHandler
     public void onFMLServerStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandTOPHelmet());
     }
 
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(Reference.MOD_ID)) {
             AddonManager.ADDONS.forEach(a -> a.updateConfigs(config));
-            HelmetConfig.loadHelmetBlacklist(config);
             if (config.hasChanged()) {
                 config.save();
             }

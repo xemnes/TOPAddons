@@ -1,6 +1,7 @@
 package io.github.drmanganese.topaddons.elements.tconstruct;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import io.github.drmanganese.topaddons.elements.ElementRenderHelper;
@@ -28,6 +29,8 @@ public class ElementSmelteryTank implements IElement {
     private final int capacity;
     private final boolean inIngots;
     private final boolean sneaking;
+
+    private static final ResourceLocation SPRITES = new ResourceLocation("theoneprobe", "textures/gui/sprites.png");
 
     private final int gaugeHeight;
 
@@ -66,29 +69,35 @@ public class ElementSmelteryTank implements IElement {
     @Override
     public void render(int x, int y) {
         if (!sneaking) {
-            ElementProgressRender.render(new ProgressStyleTank(), 0, capacity, x, y, 100, 12);
+            ElementProgressRender.render(new ProgressStyleTank(), 0, capacity, x, y, 100, 14);
             int xOffset = 0;
             for (int i = 0; i < fluids.size(); i++) {
                 SmelteryFluid fluid = fluids.get(i);
                 if (i > 0) {
                     xOffset += Math.ceil(100 * fluids.get(i - 1).amount / capacity);
                 }
-                ElementProgressRender.render(new ProgressStyleSmelteryFluid().backgroundColor(0x00ffffff).filledColor(fluid.color).alternateFilledColor(fluid.darker).showText(false), fluid.amount, capacity, x + xOffset, y, 100, 12);
+                ElementProgressRender.render(new ProgressStyleSmelteryFluid().backgroundColor(0x00ffffff).filledColor(fluid.color).alternateFilledColor(fluid.darker).showText(false).renderBG(false), fluid.amount, capacity, x + xOffset, y, 100, 14);
             }
-            for (int i = 1; i < 10; i++) {
-                RenderHelper.drawVerticalLine(x + i * 10, y + 1, y + (i == 5 ? 11 : 6), 0xff767676);
-            }
-            RenderHelper.drawVerticalLine(x + 99, y, y + 12, 0xff969696);
+//            for (int i = 1; i < 10; i++) {
+////                RenderHelper.drawVerticalLine(x + i * 10, y + 1, y + (i == 5 ? 11 : 6), 0xff767676);
+//            }
+//            RenderHelper.drawVerticalLine(x + 99, y, y + 12, 0xff969696);
         } else {
-            ElementRenderHelper.drawGreyBox(x, y, x + 100, y + gaugeHeight + 2);
+//            ElementRenderHelper.drawGreyBox(x, y, x + 100, y + gaugeHeight + 2);
+            RenderHelper.drawThickBeveledBoxGradient(x, y, x + 100, y + gaugeHeight + 2, 1, 0xff5000FF, 0xff28007F, 0xff000000);
 
             int yOffset = 0;
+
             for (int i = 0; i < fluids.size(); i++) {
                 SmelteryFluid fluid = fluids.get(i);
                 if (i > 0) {
                     yOffset += fluids.get(i - 1).height;
                 }
+
+//                Minecraft.getMinecraft().getTextureManager().bindTexture(SPRITES);
+//                RenderHelper.renderColor(fluid.color);
                 drawVerticalProgress(x, y - yOffset, fluid.amount, capacity, fluid.color, fluid.darker, fluid.height);
+//                RenderHelper.drawTexturedModalRect(x + 1, y + 1, 4, 59, 98, fluid.height);
 
                 String unit;
                 int unitAmount = fluid.name.equals("Molten Emerald") ? 666 : 144;
@@ -105,15 +114,14 @@ public class ElementSmelteryTank implements IElement {
                     unit = fluid.amount + "mB of " + fluid.name;
                 }
                 //noinspection MethodCallSideOnly
-                drawSmallText(x + 98 - Minecraft.getMinecraft().fontRenderer.getStringWidth(unit) / 2, y + gaugeHeight - 4 - yOffset, unit, fluid.brighter2);
+//                drawSmallText(x + 98 - Minecraft.getMinecraft().fontRenderer.getStringWidth(unit) / 2, y + gaugeHeight - 4 - yOffset, unit, fluid.brighter2);
+                RenderHelper.renderSmallText(Minecraft.getMinecraft(), x + 98 - Minecraft.getMinecraft().fontRenderer.getStringWidth(unit) / 2, y + gaugeHeight - 4 - yOffset, unit, RenderHelper.renderColorToHSB(fluid.color, 0.3f, 1.0f));
             }
 
-            for (int i = 1; i < 10; i++) {
-                RenderHelper.drawHorizontalLine(x + 1, y + 10 * i, x + (i == 5 ? 99 : (i % 2 == 0) ? 25 : 15), 0xaa767676);
-            }
         }
 
-        drawSmallText(x + 1, y + (sneaking ? gaugeHeight + 4 : 13), "" + "Smeltery", 0xffffffff);
+        drawSmallText(x + 1, y + (sneaking ? gaugeHeight + 4 : 15), "" + "Smeltery", 0xffffffff);
+        drawSmallText(x + 99 - Minecraft.getMinecraft().fontRenderer.getStringWidth("Sneak for Detailed View") / 2, y + 15, (sneaking ? "" : "Sneak for Detailed View"), 0xffffffff);
     }
 
     @Override
@@ -123,7 +131,7 @@ public class ElementSmelteryTank implements IElement {
 
     @Override
     public int getHeight() {
-        return sneaking ? gaugeHeight + 8 : 18;
+        return sneaking ? gaugeHeight + 8 : 20;
     }
 
     @Override

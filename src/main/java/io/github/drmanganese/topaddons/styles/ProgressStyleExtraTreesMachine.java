@@ -20,8 +20,6 @@ public class ProgressStyleExtraTreesMachine extends ProgressStyle {
 
     public ProgressStyleExtraTreesMachine(Class<? extends ComponentProcess> machine) {
         int[] colors = COLORS.get(machine);
-        borderColor(colors[0] + 0xff000000);
-        backgroundColor(colors[0] + 0x88000000);
         filledColor(colors[1]);
         alternateFilledColor(colors[2]);
     }

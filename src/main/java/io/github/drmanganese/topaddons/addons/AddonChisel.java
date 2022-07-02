@@ -21,7 +21,7 @@ public class AddonChisel extends AddonBlank {
         if (blockState.getBlock() instanceof ICarvable) {
             ICarvable block = (ICarvable) blockState.getBlock();
             ItemStack stack = data.getPickBlock();
-            String unloc = stack.getUnlocalizedName() + "." + block.getVariationData(stack.getItemDamage()).name + ".desc.1";
+            String unloc = stack.getTranslationKey() + "." + block.getVariationData(stack.getItemDamage()).name + ".desc.1";
             probeInfo.text(TextFormatting.GRAY + IProbeInfo.STARTLOC + unloc + IProbeInfo.ENDLOC);
         }
     }

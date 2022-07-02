@@ -38,8 +38,8 @@ public class ElementForestryFarm implements IElement {
         }
         oneDirection = NetworkTools.readString(buf);
         if (buf.readBoolean()) {
-            this.inventoryStacks = NonNullList.withSize(20, ItemStack.EMPTY);
-            for (int i = 0; i < 20; i++) {
+            this.inventoryStacks = NonNullList.withSize(22, ItemStack.EMPTY);
+            for (int i = 0; i < 22; i++) {
                 this.inventoryStacks.set(i, NetworkTools.readItemStack(buf));
             }
         } else {
@@ -51,7 +51,7 @@ public class ElementForestryFarm implements IElement {
     public void render(int x, int y) {
         Minecraft minecraft = Minecraft.getMinecraft();
         int centerX = x + 31;
-        int centerY = y + 18;
+        int centerY = y + 20;
 
         drawPlus(centerX - 22, centerY - 22, centerX + 38, centerY + 38);
 
@@ -63,10 +63,13 @@ public class ElementForestryFarm implements IElement {
         nextDirection();
 
         if (this.inventoryStacks.size() > 0) {
-            ElementRenderHelper.drawGreyBox(x, y + 60, x + 38, y + 116);
-            ElementRenderHelper.drawGreyBox(x + 40, y + 60, x + 78, y + 116);
-            ElementRenderHelper.drawGreyBox(x , y + 120, x + 38, y + 158);
-            ElementRenderHelper.drawGreyBox(x + 40, y + 120, x + 78, y + 158);
+            ElementRenderHelper.drawBox(x + 29, y + 70, x + 49, y + 90, 0xff349eff, 0xff1a4fa2, 0x33349eff);
+
+            ElementRenderHelper.drawBox(x + 72, y + 1, x + 110, y + 57, 0xff349eff, 0xff1a4fa2, 0x33349eff);
+            ElementRenderHelper.drawBox(x + 112, y + 1, x + 150, y + 57, 0xff349eff, 0xff1a4fa2, 0x33349eff);
+            ElementRenderHelper.drawBox(x + 72, y + 61, x + 110, y + 99, 0xffffa834, 0xffa24715, 0x33ffa834);
+            ElementRenderHelper.drawBox(x + 112, y + 61, x + 150, y + 99, 0xffffa834, 0xffa24715, 0x33ffa834);
+
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 3; j++) {
                     for (int k = 0; k < 2; k++) {
@@ -75,7 +78,7 @@ public class ElementForestryFarm implements IElement {
                         int slot = i * 6 + j * 2 + k;
 
                         if (!inventoryStacks.get(slot).isEmpty()) {
-                            renderItemStack(minecraft, minecraft.getRenderItem(), inventoryStacks.get(slot), xOffset, yOffset, inventoryStacks.get(slot).getCount() + "");
+                            renderItemStack(minecraft, minecraft.getRenderItem(), inventoryStacks.get(slot), xOffset + 72, yOffset - 59, inventoryStacks.get(slot).getCount() + "");
                         }
                     }
                 }
@@ -89,22 +92,26 @@ public class ElementForestryFarm implements IElement {
                         int slot = i * 4 + j * 2 + k + 12;
 
                         if (!inventoryStacks.get(slot).isEmpty()) {
-                            renderItemStack(minecraft, minecraft.getRenderItem(), inventoryStacks.get(slot), xOffset, yOffset, inventoryStacks.get(slot).getCount() + "");
+                            renderItemStack(minecraft, minecraft.getRenderItem(), inventoryStacks.get(slot), xOffset + 72, yOffset - 59, inventoryStacks.get(slot).getCount() + "");
                         }
                     }
                 }
+            }
+
+            if (!inventoryStacks.get(20).isEmpty()) {
+                renderItemStack(minecraft, minecraft.getRenderItem(), inventoryStacks.get(20), x + 31, y + 72, inventoryStacks.get(20).getCount() + "");
             }
         }
     }
 
     @Override
     public int getWidth() {
-        return 60;
+        return (inventoryStacks.size() > 0) ? 155 : 60;
     }
 
     @Override
     public int getHeight() {
-        return (inventoryStacks.size() > 0) ? 160 : 60;
+        return (inventoryStacks.size() > 0) ? 101 : 62;
     }
 
     @Override
@@ -149,28 +156,28 @@ public class ElementForestryFarm implements IElement {
     }
 
     private static void drawPlus(int x1, int y1, int x2, int y2) {
-        Gui.drawRect(x1 + 21, y1 + 4, x2 - 21, y2 - 37, 0x44969696);
-        Gui.drawRect(x1 + 21, y1 + 41, x2 - 21, y2, 0x44969696);
-        Gui.drawRect(x1 + 2, y1 + 23, x2 - 2, y2 - 19, 0x44969696);
+        Gui.drawRect(x1 + 21, y1 + 4, x2 - 21, y2 - 37, 0x3375d700);
+        Gui.drawRect(x1 + 21, y1 + 41, x2 - 21, y2, 0x3375d700);
+        Gui.drawRect(x1 + 2, y1 + 23, x2 - 2, y2 - 19, 0x3375d700);
 
         //TOP
-        RenderHelper.drawHorizontalLine(x1 + 21, y1 + 3, x2 - 21, 0xff969696);
-        RenderHelper.drawVerticalLine(x1 + 20, y1 + 3, y1 + 23, 0xff969696);
-        RenderHelper.drawVerticalLine(x2 - 21, y1 + 3, y1 + 23, 0xff969696);
+        RenderHelper.drawHorizontalLine(x1 + 21, y1 + 3, x2 - 21, 0xff75d700);
+        RenderHelper.drawVerticalGradientRect(x1 + 20, y1 + 3, x2 - 39, y2 - 37, 0xff75d700, 0xff63b400);
+        RenderHelper.drawVerticalGradientRect(x2 - 21, y1 + 3, x2 - 20, y2 - 37, 0xff75d700, 0xff63b400);
 
         //RIGHT
-        RenderHelper.drawHorizontalLine(x1 + 40, y1 + 22, x2 - 2, 0xff969696);
-        RenderHelper.drawVerticalLine(x2 - 2, y1 + 22, y1 + 42, 0xff969696);
-        RenderHelper.drawHorizontalLine(x1 + 40, y1 + 41, x2 - 2, 0xff969696);
+        RenderHelper.drawHorizontalLine(x1 + 40, y1 + 22, x2 - 2, 0xff63b400);
+        RenderHelper.drawVerticalGradientRect(x2 - 2, y1 + 22, x2 - 1, y2 - 18, 0xff63b400, 0xff4e8b00);
+        RenderHelper.drawHorizontalLine(x1 + 40, y1 + 41, x2 - 2, 0xff4e8b00);
 
         //BOTTOM
-        RenderHelper.drawVerticalLine(x1 + 20, y1 + 41, y1 + 61, 0xff969696);
-        RenderHelper.drawVerticalLine(x2 - 21, y1 + 41, y1 + 61, 0xff969696);
-        RenderHelper.drawHorizontalLine(x1 + 21, y1 + 60, x2 - 21, 0xff969696);
+        RenderHelper.drawVerticalGradientRect(x1 + 20, y1 + 41, x1 + 21, y1 + 61, 0xff4e8b00, 0xff3c6800);
+        RenderHelper.drawVerticalGradientRect(x2 - 21, y1 + 41, x1 + 40, y1 + 61, 0xff4e8b00, 0xff3c6800);
+        RenderHelper.drawHorizontalLine(x1 + 21, y1 + 60, x2 - 21, 0xff3c6800);
 
         //LEFT
-        RenderHelper.drawHorizontalLine(x1 + 2, y1 + 22, x2 - 40, 0xff969696);
-        RenderHelper.drawVerticalLine(x1 + 1, y1 + 22, y1 + 42, 0xff969696);
-        RenderHelper.drawHorizontalLine(x1 + 2, y1 + 41, x2 - 40, 0xff969696);
+        RenderHelper.drawHorizontalLine(x1 + 2, y1 + 22, x2 - 40, 0xff63b400);
+        RenderHelper.drawVerticalGradientRect(x1 + 1, y1 + 22, x2 - 58, y2 - 18, 0xff63b400, 0xff4e8b00);
+        RenderHelper.drawHorizontalLine(x1 + 2, y1 + 41, x2 - 40, 0xff4e8b00);
     }
 }

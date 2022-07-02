@@ -5,16 +5,15 @@ import io.github.drmanganese.topaddons.api.TOPAddon;
 import io.github.drmanganese.topaddons.elements.forestry.ElementBeeHousingInventory;
 import io.github.drmanganese.topaddons.elements.forestry.ElementForestryFarm;
 import io.github.drmanganese.topaddons.reference.Colors;
-import io.github.drmanganese.topaddons.reference.EnumChip;
 import io.github.drmanganese.topaddons.reference.Names;
 import io.github.drmanganese.topaddons.styles.ProgressStyleForestryMultiColored;
 
+import mcjty.theoneprobe.config.ConfigSetup;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -35,7 +34,6 @@ import forestry.api.farming.FarmDirection;
 import forestry.api.lepidopterology.EnumButterflyChromosome;
 import forestry.api.lepidopterology.IButterfly;
 import forestry.api.lepidopterology.IEntityButterfly;
-import forestry.apiculture.items.ItemArmorApiarist;
 import forestry.apiculture.multiblock.TileAlveary;
 import forestry.apiculture.multiblock.TileAlvearySieve;
 import forestry.apiculture.multiblock.TileAlvearySwarmer;
@@ -48,7 +46,6 @@ import forestry.core.ModuleCore;
 import forestry.core.blocks.BlockBogEarth;
 import forestry.core.errors.EnumErrorCode;
 import forestry.core.fluids.Fluids;
-import forestry.core.items.ItemArmorNaturalist;
 import forestry.core.tiles.TileAnalyzer;
 import forestry.core.tiles.TileEngine;
 import forestry.core.tiles.TileForestry;
@@ -68,9 +65,7 @@ import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.api.TextStyleClass;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @TOPAddon(dependency = "forestry")
 public class AddonForestry extends AddonBlank {
@@ -151,6 +146,9 @@ public class AddonForestry extends AddonBlank {
 
                     addBeeHouseInventory(probeInfo, tile instanceof TileApiary, reorderBeeInvStacks(inventoryStacks), player);
                 }
+                if (mode == ProbeMode.NORMAL) {
+                    probeInfo.textSmall(TextFormatting.GRAY + "Sneak for detailed view");
+                }
             }
 
             //Analyzer
@@ -213,11 +211,14 @@ public class AddonForestry extends AddonBlank {
                 }
 
                 if (mode == ProbeMode.EXTENDED) {
-                    NonNullList<ItemStack> inventoryStacks = NonNullList.withSize(20, ItemStack.EMPTY);
-                    for (int i = 0; i < 20; i++) {
+                    NonNullList<ItemStack> inventoryStacks = NonNullList.withSize(22, ItemStack.EMPTY);
+                    for (int i = 0; i < 22; i++) {
                         inventoryStacks.set(i, farm.getInternalInventory().getStackInSlot(i));
                     }
                     addFarmElement(probeInfo, farmIcons, facing.getName(), true, inventoryStacks, player);
+                }
+                if (mode == ProbeMode.NORMAL) {
+                    probeInfo.textSmall(TextFormatting.GRAY + "Sneak for detailed view");
                 }
             }
 
@@ -287,20 +288,24 @@ public class AddonForestry extends AddonBlank {
                         .item(wheats.get(3));
 
                 if (!moistener.getInternalInventory().getStackInSlot(11).isEmpty()) {
-                    probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
-                            .item(moistener.getInternalInventory().getStackInSlot(11))
-                            .progress(15 - moistener.getProductionProgressScaled(15), 15, probeInfo.defaultProgressStyle().showText(false).width(60))
-                            .item(moistener.getInternalInventory().getStackInSlot(10));
+                    probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER).spacing(5))
+                            .item(moistener.getInternalInventory().getStackInSlot(11), probeInfo.defaultItemStyle().width(16).height(20))
+                            .progress(15 - moistener.getProductionProgressScaled(15), 15, probeInfo.defaultProgressStyle().showText(false).arrowBar(true).width(26))
+                            .item(moistener.getInternalInventory().getStackInSlot(10), probeInfo.defaultItemStyle().width(14).height(20));
                 }
             }
 
             if (tile instanceof TileEngine) {
                 TileEngine engine = ((TileEngine) tile);
+                progressBar(probeInfo, engine.getEnergyManager().getEnergyStored(), engine.getEnergyManager().getMaxEnergyStored(), ConfigSetup.rfbarFilledColor, ConfigSetup.rfbarAlternateFilledColor, "", "RF");
+
                 if (mode == ProbeMode.EXTENDED) {
-                    textPrefixed(probeInfo, "{*topaddons.forestry:engine_stored*}", engine.getEnergyManager().getEnergyStored() + " RF");
+                    probeInfo.text(TextStyleClass.LABEL + "{*topaddons:generating*} " + TextStyleClass.INFOIMP + engine.getCurrentOutput() + TextStyleClass.LABEL + " RF/t");
                     textPrefixed(probeInfo, "{*topaddons.forestry:engine_heat*}", engine.getHeat() / 10 + " C" + (errorStates.contains(EnumErrorCode.FORCED_COOLDOWN) ? TextStyleClass.ERROR + " ({*for.errors.forced_cooldown.desc*})" : ""));
                 }
-                probeInfo.text(TextStyleClass.LABEL + "{*topaddons:generating*} " + TextStyleClass.INFOIMP + engine.getCurrentOutput() + TextStyleClass.LABEL + " RF/t");
+                if (mode == ProbeMode.NORMAL) {
+                    probeInfo.textSmall(TextFormatting.GRAY + "Sneak for detailed view");
+                }
             }
 
             /*
@@ -311,7 +316,12 @@ public class AddonForestry extends AddonBlank {
              * \u21aa = ↪
              */
             if (errorStates.size() > 0) {
-                probeInfo.text(TextStyleClass.ERROR + "{*topaddons.forestry:errors_nowork*}");
+                if (mode == ProbeMode.EXTENDED) {
+                    probeInfo.text(TextStyleClass.ERROR + "{*topaddons.forestry:errors_nowork*}");
+                }
+                else if (mode == ProbeMode.NORMAL) {
+                    probeInfo.textSmall(TextStyleClass.ERROR + "{*topaddons.forestry:errors_nowork*}");
+                }
                 errorStates.forEach(state -> {
                     if (mode == ProbeMode.EXTENDED || NORMAL_STATES.contains(state) && !player.getCapability(TOPAddons.OPTS_CAP, null).getBoolean("forestryReasonCrouch")) {
                         probeInfo.text(TextStyleClass.ERROR + "\u21aa " + TextStyleClass.WARNING + IProbeInfo.STARTLOC + state.getUnlocalizedDescription() + IProbeInfo.ENDLOC);
@@ -344,15 +354,20 @@ public class AddonForestry extends AddonBlank {
 
     }
 
+//    why are you overriding top configs?
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void getProbeConfig(IProbeConfig config, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
         TileEntity tile = world.getTileEntity(data.getPos());
         if ((tile instanceof IBeeHousing && !(tile instanceof TileAlvearySieve || tile instanceof TileAlvearySwarmer)) || tile instanceof TileMoistener || tile instanceof TileFarm) {
-            config.showChestContents(IProbeConfig.ConfigMode.NOT);
-            config.showChestContentsDetailed(IProbeConfig.ConfigMode.NOT);
-        } else {
-            config.showChestContents(IProbeConfig.ConfigMode.EXTENDED);
-            config.showChestContentsDetailed(IProbeConfig.ConfigMode.EXTENDED);
+            if (player.isSneaking() && !(ConfigSetup.needsProbe == ConfigSetup.PROBE_NEEDEDFOREXTENDED) || ConfigSetup.extendedInMain) {
+                config.showChestContents(IProbeConfig.ConfigMode.NOT);
+//            config.showChestContentsDetailed(IProbeConfig.ConfigMode.NOT);
+            }
+            else {
+                config.showChestContents(IProbeConfig.ConfigMode.NOT);
+//            config.showChestContentsDetailed(IProbeConfig.ConfigMode.EXTENDED);
+            }
         }
     }
 
@@ -378,14 +393,6 @@ public class AddonForestry extends AddonBlank {
         Names.tankNamesMap.put(TileStill.class, new String[]{"In", "Out"});
         Names.tankNamesMap.put(TileFermenter.class, new String[]{"Resource Tank", "Product Tank"});
         Names.tankNamesMap.put(TileRaintank.class, new String[]{"Reservoir"});
-    }
-
-    @Override
-    public Map<Class<? extends ItemArmor>, EnumChip> getSpecialHelmets() {
-        Map<Class<? extends ItemArmor>, EnumChip> map = new HashMap<>(2);
-        map.put(ItemArmorApiarist.class, EnumChip.STANDARD);
-        map.put(ItemArmorNaturalist.class, EnumChip.SPECTACLES);
-        return map;
     }
 
     private NonNullList<ItemStack> reorderBeeInvStacks(NonNullList<ItemStack> old) {
