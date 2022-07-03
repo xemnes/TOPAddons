@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityNote;
 import net.minecraft.util.EnumHand;
@@ -46,9 +47,10 @@ public class AddonVanilla extends AddonBlank {
                 if (blockState.getBlock() == Blocks.END_PORTAL) {
                     if (Tools.show(mode, ConfigSetup.getRealConfig().getShowModName())) {
                         probeInfo.horizontal()
-                                .vertical()
-                                .text(Blocks.END_PORTAL_FRAME.getLocalizedName())
-                                .text(MODNAME + Tools.getModName(Blocks.END_PORTAL));
+                                .item(new ItemStack(Blocks.END_PORTAL_FRAME))
+                                    .vertical(probeInfo.defaultLayoutStyle().spacing(0))
+                                    .text(Blocks.END_PORTAL_FRAME.getLocalizedName())
+                                    .text(MODNAME + Tools.getModName(Blocks.END_PORTAL));
                     } else {
                         probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
                                 .text(Blocks.END_PORTAL_FRAME.getLocalizedName());

@@ -127,6 +127,9 @@ public class AddonForge extends AddonBlank {
         Colors.FLUID_NAME_COLOR_MAP.put("rocket_fuel", 0xff929270);
         Colors.FLUID_NAME_COLOR_MAP.put("cloud_seed", 0xff33898d);
         Colors.FLUID_NAME_COLOR_MAP.put("cloud_seed_concentrated", 0xff566c67);
+
+        //integrateddynamics
+        Colors.FLUID_NAME_COLOR_MAP.put("menrilresin", 0xff7bdbf6);
     }
 
     private boolean showTOPTank(IProbeConfig config, EntityPlayer player) {
