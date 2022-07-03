@@ -1,5 +1,6 @@
 package io.github.drmanganese.topaddons.addons;
 
+import com.ferreusveritas.dynamictrees.blocks.BlockDynamicLeaves;
 import io.github.drmanganese.topaddons.TOPAddons;
 import io.github.drmanganese.topaddons.api.TOPAddon;
 import io.github.drmanganese.topaddons.elements.forestry.ElementBeeHousingInventory;
@@ -8,6 +9,7 @@ import io.github.drmanganese.topaddons.reference.Colors;
 import io.github.drmanganese.topaddons.reference.Names;
 import io.github.drmanganese.topaddons.styles.ProgressStyleForestryMultiColored;
 
+import maxhyper.dynamictreesforestry.blocks.BlockDynamicLeavesFruit;
 import mcjty.theoneprobe.config.ConfigSetup;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -165,7 +167,7 @@ public class AddonForestry extends AddonBlank {
                 Show fruit ripeness if the tree has them
                 Show when a leaf is pollinated (only when wearing spectacles)
              */
-            if (tile instanceof TileLeaves) {
+            if (tile instanceof TileLeaves ) {
                 TileLeaves leaves = (TileLeaves) tile;
                 if (leaves.hasFruit()) {
                     String ripeness = leaves.getRipeness() >= 1.0F ? TextStyleClass.OK + "{*topaddons.forestry:ripe*}" : TextFormatting.RED + "{*topaddons.forestry:unripe*}";
